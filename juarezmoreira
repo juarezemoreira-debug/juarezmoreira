@@ -1,0 +1,134 @@
+index.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calendário</title>
+
+<style>
+#mini-calendar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 260px;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 9999;
+}
+
+#time {
+  font-size: 1.8em;
+  font-weight: bold;
+  text-align: center;
+}
+
+#date {
+  font-size: 0.9em;
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+.day-name {
+  color: #888;
+  font-weight: bold;
+}
+
+.day {
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.today {
+  background: #00c3ff;
+  color: #000;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="mini-calendar">
+  <div id="time">00:00:00</div>
+  <div id="date">Carregando...</div>
+  <div id="calendar"></div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  function updateClock() {
+    const now = new Date();
+
+    document.getElementById('time').textContent =
+      now.toLocaleTimeString('pt-BR');
+
+    document.getElementById('date').textContent =
+      now.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function generateCalendar() {
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+    days.forEach(d => {
+      const el = document.createElement('div');
+      el.textContent = d;
+      el.classList.add('day-name');
+      calendar.appendChild(el);
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+      calendar.appendChild(document.createElement('div'));
+    }
+
+    for (let i = 1; i <= lastDate; i++) {
+      const dayEl = document.createElement('div');
+      dayEl.textContent = i;
+      dayEl.classList.add('day');
+
+      if (i === now.getDate()) {
+        dayEl.classList.add('today');
+      }
+
+      calendar.appendChild(dayEl);
+    }
+  }
+
+  generateCalendar();
+
+});
+</script>
+
+</body>
+</html>
